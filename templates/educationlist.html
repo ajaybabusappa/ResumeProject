@@ -1,0 +1,17 @@
+<h1>Education details</h1>
+
+<ul>
+
+{% for x in object_list %}
+ <li>{{x.school_name}}<br>
+ {{x.school_name}}</li>
+
+
+
+<a href ="{% url 'updateview' x.pk %}">Edit</a>
+
+{% endfor %}
+
+</ul>
+
+

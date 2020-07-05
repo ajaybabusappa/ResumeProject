@@ -1,6 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
 # Create your models here.
+from django.views.generic import ListView,DetailView
+
+
 
 class contactdetails(models.Model):
 	full_name= models.CharField(max_length=55)
@@ -12,6 +16,8 @@ class contactdetails(models.Model):
 	email= models.EmailField(max_length=40)
 	personal_profile = models.CharField(max_length=1000)
 
+
+
 class educ(models.Model):
 	school_name = models.CharField(max_length=55)
 	school_location = models.CharField(max_length=55)
@@ -19,6 +25,10 @@ class educ(models.Model):
 	CGPA=models.CharField(max_length=55)
 	Field_of_Study = models.CharField(max_length=55)
 	Expected_year_of_grad = models.CharField(max_length=55)
+
+
+	def __str__(self):
+		return self.school_name+'|'+ str(self.school_location)
 	
 
 class workexp(models.Model):

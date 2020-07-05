@@ -1,10 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import contactdetails,educ, workexp,skills,extrafield
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
 from .forms import Extrafielfform
+
+from django.views.generic import ListView  ,DetailView, UpdateView
+from django.utils.decorators import method_decorator
+from braces.views import CsrfExemptMixin
+from django.views.decorators.cache import never_cache
+from django.core import serializers
+
 # Create your views here.
 #this is for page opening
+
+
+
 @csrf_exempt
 def firstpage (request):
 	contactdetails.objects.all().delete()
@@ -30,6 +40,42 @@ def edu(request):
 		personal_profile = request.POST.get('person')
 		contactx=contactdetails.objects.create(full_name=full_name, position=position, city=city,state=state,zipcode=zipcode ,email=email,personal_profile=personal_profile,phone=phone)
 		return render(request,'Tell us about your education.html')
+	
+
+
+
+
+class EducationView(ListView):
+
+	def get (self,request):
+		msg = request.session.get ('msg',False)
+		if(msg):
+			del (request.session['msg'])
+		Educ = educ.objects.all();
+		return render (request,'educationlist.html',{'object_list':Educ})
+
+
+	def post(self,request):
+		
+		school_name = request.POST.get('school_name',False)
+		school_location = request.POST.get('school_location',False)
+		Degree = request.POST.get('Degree',False)
+		CGPA = request.POST.get('CGPA',False)
+		Field_of_Study = request.POST.get('Field_of_Study',False)
+		Expected_year_of_grad = request.POST.get('Expected_year_of_grad',False)
+		contactx = educ.objects.create(school_name=school_name,school_location=school_location,Degree=Degree,CGPA=CGPA,
+			Field_of_Study=Field_of_Study,Expected_year_of_grad=Expected_year_of_grad)
+		contactx2 = serializers.serialize ('json',[contactx])
+		request.session['msg']=contactx2
+		return redirect(request.path)
+
+	
+
+
+class UpdatepostView(UpdateView):
+	model = educ
+	template_name = 'updatepost.html'
+	fields = ['school_name','school_location','Degree','CGPA','Field_of_Study','Expected_year_of_grad']
 	
 
 
@@ -75,8 +121,7 @@ def home(request):
 	contacte1 = educ.objects.all()
 	job1 = workexp.objects.all()
 	skill1=skills.objects.all()
-	adds = extrafield.objects.all()
-	#return render(request,'home.html',{'c_items':c_items,'contacte1':contacte1,'job1':job1,'skills':skill1})
+	#retddsurn render(request,'home.html',{'c_items':c_items,'contacte1':contacte1,'job1':job1,'skills':skill1})
 	#if not request.POST.get('field_name'):
 	#	return render(request,'home.html',{'i':contact1,'contacte1':contacte1,'job1':job1,'skills':skill1,'adds':adds})
 
@@ -87,6 +132,7 @@ def home(request):
 		field_name= request.POST.get('field_name',False)
 		explanation= request.POST.get('explanation',False)
 		xyz = extrafield.objects.create(field_name=field_name,explanation=explanation)
+
 	adds1 = extrafield.objects.all()
 	return render(request,'home.html',{'i':contact1,'contacte1':contacte1,'job1':job1,'skills':skill1,'adds':adds1})
 	#return render (request,'Extra_field')
@@ -113,7 +159,7 @@ def jobadd (request):
 	enddate = request.POST.get('enddate',False)
 	startdate = request.POST.get('startdate',False)
 	jobdesc = request.POST.get('jobdesc',False)
-	something=workexp.objects.create(job_title=job_title ,employer=employer ,city=city, state=state ,enddate=enddate ,startdate=startdate ,jobdesc=jobdesc)
+	something=workexp.objects.create(job_title=job_title,employer=employer ,city=city, state=state ,enddate=enddate ,startdate=startdate ,jobdesc=jobdesc)
 	return HttpResponseRedirect('/login/next/')
 
 
@@ -153,6 +199,52 @@ def addonstest(request):
 		skill= request.POST.get('skill',False)
 		xyz = skills.objects.create(skill=skill)
 		return render (request,'Extra_field.html',{'form':form})
+
+
+
+
+@csrf_exempt
+def backopt (request):
+
+	if not request.POST.get('full'):
+		return HttpResponseRedirect('/')
+	else:
+		return HttpResponseRedirect('/')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

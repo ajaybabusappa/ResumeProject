@@ -1,11 +1,20 @@
 from django.urls import path
 from . import views
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns=[
-	 path('',views.firstpage,name='firstpage'),
+	path('',views.firstpage,name='firstpage'),
      path('login/',views.edu,name = 'edu'),
      path('login/add/',views.educrev,name='educrev'),
-     path('login/next/',views.job345, name='job345'),
+
+
+
+
+
+     path('login/next/',views.EducationView.as_view(),name='education'),
+     path ('login/next/<int:pk>',views.UpdatepostView.as_view(), name='updateview'),
+     #path('login/next/',views.job345, name='job345'),
+     path('login/back/',views.backopt,name='backopt'),
      path('login/next/job/',views.skillsfun,name='skillfun'),
      path('login/next/add/',views.jobadd,name='jobadd'),
      path('login/next/job/add/',views.skillsadd,name='skillfun'),
